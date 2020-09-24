@@ -30,34 +30,42 @@ If you later on want to remove it, run:
 ```
 
 ### Plug your USB-wifi-adapter into your PC
+插入您的usb -wi - fi适配器到您的PC
 If wifi can be detected, congratulations.
+如果能探测到wifi，恭喜你。
 If not, maybe you need to switch your device usb mode by the following steps in terminal:
+如果没有，您可能需要切换您的设备usb模式，以下步骤在终端:
 1. find your usb-wifi-adapter device ID, like "0bda:1a2b", by type:
+1. 找到您的usb-wi - fi适配器设备ID，如“0bda:1a2b”，按类型:
 ```
 lsusb
 ```
 2. switch the mode by type: (the device ID must be yours.)
+2. 按类型切换模式:(设备ID必须是你的)
 
 Need install `usb_modeswitch` (Archlinux: `sudo pacman -S usb_modeswitch`)
+需要安装' usb_modeswitch ' (Archlinux: ' sudo pacman -S usb_modeswitch ')
 ```
 sudo usb_modeswitch -KW -v 0bda -p 1a2b
 systemctl start bluetooth.service - starting Bluetooth service if it's in inactive state
 ```
 
 It should work.
-
+它应该工作。
 ### Make it permanent
+   永久工作
 
 If steps above worked fine and in order to avoid periodically having to make `usb_modeswitch` you can make it permanent (Working in **Ubuntu 18.04 LTS**):
-
+如果以上步骤工作良好，为了避免周期性地使' usb_modeswitch '，你可以使它永久(工作在**Ubuntu 18.04 LTS**):
 1. Edit `usb_modeswitch` rules:
+ 编辑“usb_modeswitch”规则:
 
    ```bash
    sudo nano /lib/udev/rules.d/40-usb_modeswitch.rules
    ```
 
 2. Append before the end line `LABEL="modeswitch_rules_end"` the following:
-
+  在结束行' LABEL="modeswitch_rules_end" '之前追加以下内容:
    ```
    # Realtek 8211CU Wifi AC USB
    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/usr/sbin/usb_modeswitch -K -v 0bda -p 1a2b"
