@@ -2,13 +2,13 @@
 
 Before build this driver make sure `make`, `gcc`, `linux-header` and `git` have been installed.
 
-## First, clone this repository
+## 首先下载仓库
 ```
 mkdir -p ~/build
 cd ~/build
 git clone https://github.com/brektrou/rtl8821CU.git
 ```
-## Build and install with DKMS
+## Build and install with DKMS 使用 DKMS 构建和安装 我没有用 我用下面的make 和install
 
 DKMS is a system which will automatically recompile and install a kernel module when a new kernel gets installed or updated. To make use of DKMS, install the dkms package.
 
@@ -63,14 +63,17 @@ If steps above worked fine and in order to avoid periodically having to make `us
    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/usr/sbin/usb_modeswitch -K -v 0bda -p 1a2b"
    ```   
 
-## Build and install without DKMS
+## Build and install without DKMS   
+不用DKMS 构建  我直接在这里make 和install 的  #sudo modprobe 8821cu  不知道什么意思 我没有运行也成功了  到这里就可以结束了  如果插入没反应你在往下看
 Use following commands:
 ```
 cd ~/build/rtl8821CU
 make
 sudo make install
+#sudo modprobe 8821cu  不知道什么意思 我没有运行也成功了
 ```
 If you later on want to remove it, do the following:
+你可以这样卸载驱动 
 ```
 cd ~/build/rtl8821CU
 sudo make uninstall
@@ -88,6 +91,7 @@ Make sure `8821cu.ko` file present on that directory
 sudo dkms status
 ``
 ### ARM architecture tweak for this driver (this solves compilation problem of this driver):
+此驱动程序的ARM架构调整(解决此驱动程序的编译问题):
 ```
 # For AArch32
 sudo cp /lib/modules/$(uname -r)/build/arch/arm/Makefile /lib/modules/$(uname -r)/build/arch/arm/Makefile.$(date +%Y%m%d%H%M)
@@ -100,7 +104,27 @@ sudo sed -i 's/-mgeneral-regs-only//' /lib/modules/$(uname -r)/build/arch/arm64/
 
 ```
 ### Monitor mode
+监控模式
 Use the tool 'iw', please don't use other tools like 'airmon-ng'
 ```
 iw dev wlan0 set monitor none
+```
+### Raspberry Pi 树莓派
+To build this driver on Raspberry Pi you need to set correct platform in Makefile. Change
+```
+CONFIG_PLATFORM_I386_PC = y
+CONFIG_PLATFORM_ARM_RPI = n
+CONFIG_PLATFORM_ARM_RPI3 = n
+```
+to
+```
+CONFIG_PLATFORM_I386_PC = n
+CONFIG_PLATFORM_ARM_RPI = y
+CONFIG_PLATFORM_ARM_RPI3 = n
+```
+For the Raspberry Pi 3 you need to change it to
+```
+CONFIG_PLATFORM_I386_PC = n
+CONFIG_PLATFORM_ARM_RPI = n
+CONFIG_PLATFORM_ARM_RPI3 = y
 ```
